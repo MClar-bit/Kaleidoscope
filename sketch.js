@@ -4,6 +4,7 @@ let symmetry = 6;
 let angle = 360 / symmetry;
 
 let lineArr = [];
+let isMoving = true;
 
 let r = 0;
 let g=0;
@@ -13,26 +14,41 @@ let rdown;
 function setup() {
   angleMode(DEGREES);
   createCanvas(600, 500);
-  background(0);
+  background(random(255), random(255), random(255));
   mover = new Mover();
+  g = random(255)
+  b=random(255)
+  song = loadSound('this-dot-kp.mp3');
 }
 
 function draw() {
-  translate(random(-5, 5), random(-5, 5));
-  mover.update();
-  mover.show();
-  mover.checkEdges();
-  if (r==255){
-    rdown = true;
-  } else if(r==0) {
-    rdown = false;
+  if (isMoving) {
+    translate(random(-5, 5), random(-5, 5));
+    mover.update();
+    mover.show();
+    mover.checkEdges();
+    if (r==255){
+      rdown = true;
+    } else if(r==0) {
+      rdown = false;
+    }
+    if (rdown) {
+      r--;
+    } else {
+      r++;
+    }
   }
-  if (rdown == true) {
-    r--;
-  } else {
-    r++;
-  }
+  
 
+}
+
+function mousePressed() {
+  isMoving = !isMoving
+  if (song.isPlaying()) {
+    song.pause();
+    } else {
+    song.play();
+    }
 }
 
 class Mover {
@@ -68,7 +84,7 @@ class Mover {
   reflect(){
      for (let i = 0; i < symmetry; i++) {
        rotate(angle);
-       stroke(r, 0, 100)
+       stroke(r, g, b)
        line(this.prevPosition.x-width/2, this.prevPosition.y-height / 2, this.position.x-width/2, this.position.y-height / 2);
 
         push();
