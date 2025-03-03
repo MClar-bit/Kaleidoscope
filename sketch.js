@@ -4,7 +4,7 @@ let symmetry = 6;
 let angle = 360 / symmetry;
 
 let lineArr = [];
-let isMoving = true;
+let isMoving = false;
 
 let r = 0;
 let g=0;
@@ -18,7 +18,7 @@ function setup() {
   mover = new Mover();
   g = random(255)
   b=random(255)
-  song = loadSound('this-dot-kp.mp3');
+  song = loadSound('sample.mp3');
 }
 
 function draw() {
