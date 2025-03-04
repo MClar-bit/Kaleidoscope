@@ -1,4 +1,4 @@
-let mover;
+let mover, amp, song;
 
 let symmetry = 6;
 let angle = 360 / symmetry;
@@ -11,6 +11,11 @@ let g=0;
 let b= 0;
 let rdown;
 
+function preload(){
+  song = loadSound('everglow.mp3');
+}
+
+
 function setup() {
   angleMode(DEGREES);
   createCanvas(600, 500);
@@ -18,7 +23,8 @@ function setup() {
   mover = new Mover();
   g = random(255)
   b=random(255)
-  song = loadSound('sample.mp3');
+  song.pause();
+  amp = new p5.Amplitude();
 }
 
 function draw() {
@@ -62,8 +68,11 @@ class Mover {
   }
 
   update() {
+    let level = amp.getLevel(); // Get current volume level
+    let movementFactor = map(level, 0, 1, 0, 3); 
+
     this.acceleration = p5.Vector.random2D();
-    this.acceleration.mult(random(2));
+    this.acceleration.mult(random(1, 2) + movementFactor);
     this.velocity.add(this.acceleration);
     this.velocity.limit(this.topSpeed);
     this.position.add(this.velocity);
@@ -74,7 +83,7 @@ class Mover {
     translate(width / 2, height / 2);
 
 
-    if (this.edgeWrap==false){
+    if (!this.edgeWrap){
       this.reflect();
     }
     this.prevPosition.set(this.position);
