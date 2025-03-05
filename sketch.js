@@ -1,10 +1,11 @@
-let mover, amp, song;
+let mover, amp, song, shake;
 
 let symmetry = 6;
 let angle = 360 / symmetry;
 
-let lineArr = [];
 let isMoving = false;
+
+var fft;
 
 let r = 0;
 let g=0;
@@ -21,18 +22,28 @@ function setup() {
   createCanvas(600, 500);
   background(random(255), random(255), random(255));
   mover = new Mover();
+  shake = new Shake();
   g = random(255)
   b=random(255)
   song.pause();
   amp = new p5.Amplitude();
+  fft = new p5.FFT()
+  console.log(fft.waveform())
 }
 
 function draw() {
+
   if (isMoving) {
+    
+    //push();
+    //shake.apply();
     translate(random(-5, 5), random(-5, 5));
     mover.update();
     mover.show();
     mover.checkEdges();
+
+    //pop();
+
     if (r==255){
       rdown = true;
     } else if(r==0) {
@@ -50,74 +61,10 @@ function draw() {
 
 function mousePressed() {
   isMoving = !isMoving
+  //shake.shaking = !shake.shaking;
   if (song.isPlaying()) {
     song.pause();
     } else {
     song.play();
     }
-}
-
-class Mover {
-  constructor() {
-    this.position = createVector(random(width), random(height));
-    this.velocity = createVector();
-    this.acceleration = createVector();
-    this.topSpeed = 5;
-    this.prevPosition = this.position.copy();
-    this.edgeWrap = false;
-  }
-
-  update() {
-    let level = amp.getLevel(); // Get current volume level
-    let movementFactor = map(level, 0, 1, 0, 3); 
-
-    this.acceleration = p5.Vector.random2D();
-    this.acceleration.mult(random(1, 2) + movementFactor);
-    this.velocity.add(this.acceleration);
-    this.velocity.limit(this.topSpeed);
-    this.position.add(this.velocity);
-  }
-
-  show() {
-    strokeWeight(2);
-    translate(width / 2, height / 2);
-
-
-    if (!this.edgeWrap){
-      this.reflect();
-    }
-    this.prevPosition.set(this.position);
-    this.edgeWrap = false
-  }
-
-  reflect(){
-     for (let i = 0; i < symmetry; i++) {
-       rotate(angle);
-       stroke(r, g, b)
-       line(this.prevPosition.x-width/2, this.prevPosition.y-height / 2, this.position.x-width/2, this.position.y-height / 2);
-
-        push();
-        scale(1, -1);
-        line(this.prevPosition.x-width/2, this.prevPosition.y-height / 2, this.position.x-width/2, this.position.y-height / 2);
-        pop();
-    }
-  }
-
-  checkEdges() {
-    if (this.position.x > width) {
-      this.position.x = 0;
-      this.edgeWrap=true
-    } else if (this.position.x < 0) {
-      this.position.x = width;
-      this.edgeWrap=true;
-    }
-
-    if (this.position.y > height) {
-      this.position.y = 0;
-      this.edgeWrap=true
-    } else if (this.position.y < 0) {
-      this.position.y = height;
-      this.edgeWrap=true;
-    }
-  }
 }
