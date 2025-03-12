@@ -64,19 +64,3 @@ class Mover {
     }
   }
 
-  
-
-  class Shake {
-    constructor(intensity = 10) {
-      this.intensity = intensity;
-      this.shaking = true;
-    }
-
-    apply(){
-      if (this.shaking){
-        let shakeX = random(-this.intensity, this.intensity);
-        let shakeY = random(-this.intensity, this.intensity);
-        translate(shakeX, shakeY);
-      }
-    }
-  }

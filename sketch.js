@@ -1,4 +1,4 @@
-let mover, amp, song, shake;
+let mover, amp, song, shake, beat;
 
 let symmetry = 6;
 let angle = 360 / symmetry;
@@ -12,6 +12,9 @@ let g=0;
 let b= 0;
 let rdown;
 
+let canvas;
+
+
 function preload(){
   song = loadSound('everglow.mp3');
 }
@@ -19,7 +22,8 @@ function preload(){
 
 function setup() {
   angleMode(DEGREES);
-  createCanvas(600, 500);
+  canvas = createCanvas(600, 500);
+  canvas.position(100, 100);
   background(random(255), random(255), random(255));
   mover = new Mover();
   shake = new Shake();
@@ -27,22 +31,20 @@ function setup() {
   b=random(255)
   song.pause();
   amp = new p5.Amplitude();
-  fft = new p5.FFT()
-  console.log(fft.waveform())
+  fft = new p5.FFT(0.8, 64); 
+  song.setVolume(1); 
+  fft.setInput(song)
+
 }
 
 function draw() {
 
   if (isMoving) {
     
-    //push();
-    //shake.apply();
     translate(random(-5, 5), random(-5, 5));
     mover.update();
     mover.show();
     mover.checkEdges();
-
-    //pop();
 
     if (r==255){
       rdown = true;
@@ -54,6 +56,15 @@ function draw() {
     } else {
       r++;
     }
+
+    fft.analyze()
+  beat = fft.getEnergy(20, 200);
+
+  if (beat > 260) { 
+    let shakeX = random(-5, 5);
+    let shakeY = random(-5, 5);
+    canvas.position(100 + shakeX, 100 + shakeY);
+  }
   }
   
 
@@ -61,7 +72,7 @@ function draw() {
 
 function mousePressed() {
   isMoving = !isMoving
-  //shake.shaking = !shake.shaking;
+
   if (song.isPlaying()) {
     song.pause();
     } else {
