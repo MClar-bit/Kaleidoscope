@@ -14,7 +14,7 @@ let rdown;
 
 let canvas;
 
-
+//Loads the song
 function preload(){
   song = loadSound('everglow.mp3');
 }
@@ -26,26 +26,34 @@ function setup() {
   canvas.position(100, 100);
   background(random(255), random(255), random(255));
   mover = new Mover();
-  shake = new Shake();
+
   g = random(255)
   b=random(255)
+
+
   song.pause();
+
+  //Measures sound aspects 
   amp = new p5.Amplitude();
   fft = new p5.FFT(0.8, 64); 
-  song.setVolume(1); 
   fft.setInput(song)
 
 }
 
 function draw() {
 
+//Checks if the program is running
   if (isMoving) {
     
+    
     translate(random(-5, 5), random(-5, 5));
+
+
     mover.update();
     mover.show();
     mover.checkEdges();
 
+    //Creates random color for the line - I plan to create a class to create various colors based on music
     if (r==255){
       rdown = true;
     } else if(r==0) {
@@ -57,19 +65,22 @@ function draw() {
       r++;
     }
 
+    //Analyze the FFT levels and returns value
     fft.analyze()
-  beat = fft.getEnergy(20, 200);
+    beat = fft.getEnergy(20, 200);
+    console.log(beat);
 
-  if (beat > 260) { 
-    let shakeX = random(-5, 5);
-    let shakeY = random(-5, 5);
-    canvas.position(100 + shakeX, 100 + shakeY);
-  }
+    if (beat > 250) { 
+      let shakeX = random(-5, 5);
+      let shakeY = random(-5, 5);
+      canvas.position(100 + shakeX, 100 + shakeY);
+    }
   }
   
 
 }
 
+//When  clicked, pauses the program. 
 function mousePressed() {
   isMoving = !isMoving
 

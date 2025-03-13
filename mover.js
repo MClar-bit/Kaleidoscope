@@ -1,5 +1,6 @@
-
+//Created a class for the movers, so that it doesn't clutter the program. 
 class Mover {
+
     constructor() {
       this.position = createVector(random(width), random(height));
       this.velocity = createVector();
@@ -8,13 +9,14 @@ class Mover {
       this.prevPosition = this.position.copy();
       this.edgeWrap = false;
     }
-  
+
+  //Updates the mover to move each time the program loops.
     update() {
-      let level = amp.getLevel(); // Get current volume level
-      let movementFactor = map(level, 0, 1, 0, 3); 
+      let level = amp.getLevel();
+      let moveFactor = map(level, 0, 1, 0, 3); 
   
       this.acceleration = p5.Vector.random2D();
-      this.acceleration.mult(random(1, 2) + movementFactor);
+      this.acceleration.mult(random(1, 2) + moveFactor);
       this.velocity.add(this.acceleration);
       this.velocity.limit(this.topSpeed);
       this.position.add(this.velocity);
@@ -23,8 +25,8 @@ class Mover {
     show() {
       strokeWeight(2);
       translate(width / 2, height / 2);
-  
-  
+
+      //If the program is not at the edge, creates lines 
       if (!this.edgeWrap){
         this.reflect();
       }
@@ -32,6 +34,7 @@ class Mover {
       this.edgeWrap = false
     }
   
+    //Creates the lines and reflects/rotates the lines 
     reflect(){
        for (let i = 0; i < symmetry; i++) {
          rotate(angle);
@@ -44,7 +47,8 @@ class Mover {
           pop();
       }
     }
-  
+
+  //Checks if the mover is at the edge and moves the mover to the other edge
     checkEdges() {
       if (this.position.x > width) {
         this.position.x = 0;
@@ -64,3 +68,4 @@ class Mover {
     }
   }
 
+  
